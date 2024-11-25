@@ -1,0 +1,40 @@
+name: Test Workflow 1
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-n-push:
+    name: Docker Build and Push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate a token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.ARGOCD_APP_ID }}
+          private-key: ${{ secrets.ARGOCD_PRIVATE_KEY }}
+          repositories: testrepo
+
+      - name: Checkout k8s repo
+        uses: actions/checkout@v4
+        with:
+          repository: testrepo
+          token: ${{ steps.generate_token.outputs.token }}
+          path: infra
+          ref: main
+
+      - name: update image on kustomize repo
+        working-directory: infra
+        run: |
+          echo `date` > outputfile.txt
+          cat outputfile.txt
+
+      - name: Commit files on k8s
+        working-directory: infra
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Commit `date`"
+          git push
