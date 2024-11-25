@@ -2,6 +2,9 @@ name: Test Workflow 1
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build-n-push:
