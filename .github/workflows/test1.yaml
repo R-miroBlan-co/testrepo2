@@ -23,7 +23,7 @@ jobs:
       - name: Checkout k8s repo
         uses: actions/checkout@v4
         with:
-          repository: testrepo
+          repository: R-miroBlan-co/testrepo
           token: ${{ steps.generate_token.outputs.token }}
           path: infra
           ref: main
